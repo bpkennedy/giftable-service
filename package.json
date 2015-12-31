@@ -1,0 +1,23 @@
+{
+  "name": "giftable-service",
+  "version": "1.0.0",
+  "description": "Server side services for the giftable app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bpkennedy/giftable-service.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bpkennedy/giftable-service/issues"
+  },
+  "homepage": "https://github.com/bpkennedy/giftable-service",
+  "devDependencies": {
+    "node-rest-client": "^1.5.1",
+    "nodemailer": "^1.11.0"
+  }
+}
