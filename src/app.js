@@ -25,12 +25,11 @@ myFirebaseRef.child('events').on("value", function(snapshot) {
     //console.log('today is ' + today);
   snapshot.forEach(function(childSnapshot){
     var key = childSnapshot.val();
-    var itemDate = new Date(key.event_date);
+    var notifyDate = new Date(key.notificationTime);
     var itemCreatedBy = key.created_by;
     var itemNotifyState = key.notification;
-    //console.log(itemDate);
     //console.log(key.event_date);
-    if (itemDate <= today && itemNotifyState == 'pending') {
+    if (notifyDate <= today && itemNotifyState == 'pending') {
             console.log('match');
             var user = users[itemCreatedBy];
             mailOptions = {
