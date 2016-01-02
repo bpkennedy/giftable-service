@@ -1,5 +1,5 @@
-var Client = require('node-rest-client').Client;
-client = new Client();
+var Firebase = require("firebase");
+var myFirebaseRef = new Firebase("https://giftable.firebaseio.com/");
 
 //Setting up nodemailer
 var nodemailer = require('nodemailer');
@@ -12,27 +12,49 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-//example sending email with nodemailer
-var mailOptions = {
-    from: 'JimmehBoy ✔ <do-not-reply@gmailRekt.com>',
-    to: 'brian.kennedy@wwt.com',
-    subject: 'Rekt!',
-    html: '<ul><li><b>Figured out how to send emails with html from nodemailer via the scriptz, woot!  But it looks like they reccomend using node-smtp-pool for nodemailer if you want to do bulk emailing.  And then they suggest RabbitMQ to queue it up!  It never ends, Le Byron!!</b></li></ul>'
-};
 
-transporter.sendMail(mailOptions, function(error, info) {
-    if(error) {
-        return console.log(error);
+var today = new Date();
+var users = [];
+
+myFirebaseRef.child('users').on("value", function(snapshot) {
+    users.push(snapshot.val());
+    users = users[0];
+});
+
+myFirebaseRef.child('events').on("value", function(snapshot) {
+    //console.log('today is ' + today);
+  snapshot.forEach(function(childSnapshot){
+    var key = childSnapshot.val();
+    var itemDate = new Date(key.event_date);
+    var itemCreatedBy = key.created_by;
+    var itemNotifyState = key.notification;
+    //console.log(itemDate);
+    //console.log(key.event_date);
+    if (itemDate <= today && itemNotifyState == 'pending') {
+            console.log('match');
+            var user = users[itemCreatedBy];
+            mailOptions = {
+                from: 'Giftable <do-not-reply@mail.com>',
+                to: user.email,
+                subject: 'Giftable Event Approaching',
+                html: '<h3>Hey <b>' + user.displayName + '</b>!</h3><p>Looks like <b>' + key.event_title + '</b> is coming up!'
+            };
+            //console.log(mailOptions);
+            sendEmail(mailOptions);
+    } else {
+        console.log('false');
     }
-    console.log('Message sent to ' + info.accepted);
+
+  });
+}, function (errorObject) {
+  console.log("The read failed: " + errorObject.code);
 });
 
-/*
-*
-*   making up REST call to get events
-*/
-
-client.get("https://giftable.firebaseio.com/events.json", function(data, response){
-    var dataString = data.toString('utf8');
-    console.log(dataString);
-});
+function sendEmail(mailOptions) {
+    transporter.sendMail(mailOptions, function(error, info) {
+        if(error) {
+            return console.log(error);
+        }
+        console.log('Message sent to ' + info.accepted);
+    });
+}
