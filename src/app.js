@@ -24,6 +24,7 @@ myFirebaseRef.child('users').on("value", function(snapshot) {
 myFirebaseRef.child('events').on("value", function(snapshot) {
     //console.log('today is ' + today);
   snapshot.forEach(function(childSnapshot){
+    //console.log(childSnapshot.key());
     var key = childSnapshot.val();
     var notifyDate = new Date(key.notificationTime);
     var itemCreatedBy = key.created_by;
@@ -39,7 +40,9 @@ myFirebaseRef.child('events').on("value", function(snapshot) {
                 html: '<h3>Hey <b>' + user.displayName + '</b>!</h3><p>Looks like <b>' + key.event_title + '</b> is coming up!'
             };
             //console.log(mailOptions);
+            updateNotificationStatus(childSnapshot.key());
             sendEmail(mailOptions);
+
     } else {
         console.log('false');
     }
@@ -48,6 +51,12 @@ myFirebaseRef.child('events').on("value", function(snapshot) {
 }, function (errorObject) {
   console.log("The read failed: " + errorObject.code);
 });
+
+function updateNotificationStatus(firebaseItem) {
+    myFirebaseRef.child('events/' + firebaseItem).update({
+        "notification":"sent"
+    });
+}
 
 function sendEmail(mailOptions) {
     transporter.sendMail(mailOptions, function(error, info) {
