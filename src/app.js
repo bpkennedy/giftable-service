@@ -27,9 +27,9 @@ myFirebaseRef.child('events').on("value", function(snapshot) {
     //console.log(childSnapshot.key());
     var key = childSnapshot.val();
     var notifyDate = new Date(key.notificationTime);
-    var itemCreatedBy = key.created_by;
+    var itemCreatedBy = key.createdBy;
     var itemNotifyState = key.notification;
-    //console.log(key.event_date);
+    //console.log(key.eventDate);
     if (notifyDate <= today && itemNotifyState == 'pending') {
             console.log('match');
             var user = users[itemCreatedBy];
@@ -37,7 +37,7 @@ myFirebaseRef.child('events').on("value", function(snapshot) {
                 from: 'Giftable <do-not-reply@mail.com>',
                 to: user.email,
                 subject: 'Giftable Event Approaching',
-                html: '<h3>Hey <b>' + user.displayName + '</b>!</h3><p>Looks like <b>' + key.event_title + '</b> is coming up!'
+                html: '<h3>Hey <b>' + user.name + '</b>!</h3><p>Looks like <b>' + key.eventTitle + '</b> is coming up!'
             };
             //console.log(mailOptions);
             updateNotificationStatus(childSnapshot.key());
