@@ -1,6 +1,5 @@
 var Firebase = require("firebase");
 var myFirebaseRef = new Firebase("https://giftable.firebaseio.com/");
-
 //Setting up nodemailer
 var nodemailer = require('nodemailer');
 
@@ -12,16 +11,16 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-
 var today = new Date();
 var users = [];
+var emailsToSend = [];
 
-myFirebaseRef.child('users').on("value", function(snapshot) {
+myFirebaseRef.child('users').once("value", function(snapshot) {
     users.push(snapshot.val());
     users = users[0];
 });
 
-myFirebaseRef.child('events').on("value", function(snapshot) {
+myFirebaseRef.child('events').once("value", function(snapshot) {
     //console.log('today is ' + today);
   snapshot.forEach(function(childSnapshot){
     //console.log(childSnapshot.key());
@@ -41,6 +40,7 @@ myFirebaseRef.child('events').on("value", function(snapshot) {
             };
             //console.log(mailOptions);
             updateNotificationStatus(childSnapshot.key());
+            emailsToSend = emailsToSend.push[1];
             sendEmail(mailOptions);
 
     } else {
@@ -63,6 +63,19 @@ function sendEmail(mailOptions) {
         if(error) {
             return console.log(error);
         }
+        emailsToSend = emailsToSend.pop();
         console.log('Message sent to ' + info.accepted);
     });
 }
+
+//this is the only way to exit the process once we use firebase's Ref.
+//Ref opens a persistent connection that keeps the process alive
+//(http://stackoverflow.com/questions/27641764/how-to-destroy-firebase-ref-in-node).
+//   ...definitely open to a better way!  For now, I'll check when emails are all sent
+setInterval(function() {
+  if (emailsToSend.length > 1 || !emailsToSend) {
+      console.log('process still busy emailing, waiting another 2 seconds...');
+  } else {
+      process.exit();
+  }
+}, 2000);
