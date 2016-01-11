@@ -7,8 +7,8 @@ var moment = require('moment');
 var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'bpkennedy@gmail.com',
-        pass: 'Mallorie1!'
+        user: 'giftablemail@gmail.com',
+        pass: 'ThisIsStupid1!'
     }
 });
 
