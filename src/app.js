@@ -1,4 +1,4 @@
-var Firebase = require("firebase");
+var Firebase = require('firebase');
 var myFirebaseRef = new Firebase("https://giftable.firebaseio.com/");
 //Setting up nodemailer
 var nodemailer = require('nodemailer');
