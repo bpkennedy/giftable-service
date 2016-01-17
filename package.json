@@ -16,9 +16,9 @@
     "url": "https://github.com/bpkennedy/giftable-service/issues"
   },
   "homepage": "https://github.com/bpkennedy/giftable-service",
-  "devDependencies": {
+  "dependencies": {
     "firebase": "^2.3.2",
     "moment": "^2.11.1",
-    "nodemailer": "^1.11.0"
+    "nodemailer": "^2.0.0"
   }
 }
